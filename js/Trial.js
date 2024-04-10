@@ -1,11 +1,19 @@
-// Assuming jsonData is the parsed JSON object from your JSON file
-const jsonData = d3.json("data/Beethoven5_1.json");
+d3.json("Beethoven5_1.json").then(function(jsonData) {
+  // Once the data is loaded, process it
+  const result = processMusicData(jsonData);
 
-// Function to process the data
+  // Log or use the result here, inside the Promise resolution
+  console.log(result);
+}).catch(function(error) {
+  // Handle any errors that occur during the loading process
+  console.error("Error loading the JSON file:", error);
+});
+
+// Function to process the data remains unchanged
 function processMusicData(data) {
   const intervals = {};
   const intervalDuration = 5; // seconds
-  
+
   // Determine the total duration of the piece
   let totalDuration = 0;
   data.tracks.forEach(track => {
@@ -43,7 +51,3 @@ function processMusicData(data) {
 
   return intervals;
 }
-
-// Call the function with the JSON data
-const result = processMusicData(jsonData);
-console.log(result);
