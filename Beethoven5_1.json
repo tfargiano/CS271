@@ -1,4 +1,5 @@
 {
+  "_comment": "Assumes middle C is a C4, note number 60",
   "header": {
     "keySignatures": [],
     "meta": [],
