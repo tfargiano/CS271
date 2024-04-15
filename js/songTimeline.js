@@ -91,6 +91,13 @@ class Timeline {
     wrangleData() {
         let vis = this;
 
+        // (1) Group data by instrument (could be easier if already grouped in JSON)
+        // (2) Group data by timecode 
+        // (3) 
+
+        // for each track if time is the same but note is not the same
+        // count each note as one instrument 
+
         
         // Update the visualization
         vis.updateVis();
