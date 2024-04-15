@@ -10,7 +10,8 @@ d3.json("Beethoven5_1.json").then(function(jsonData) {
 });
 
 function processMusicData(data) {
-  const intervals = [];
+  console.log(data);
+  const intervals = {};
   const intervalDuration = 5; // seconds
 
   // Determine the total duration of the piece
