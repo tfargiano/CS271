@@ -11,6 +11,7 @@ d3.json("Beethoven5_1.json").then(function(jsonData) {
 
 // Function to process the data remains unchanged
 function processMusicData(data) {
+  console.log(data);
   const intervals = {};
   const intervalDuration = 5; // seconds
 
