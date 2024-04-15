@@ -9,9 +9,8 @@ d3.json("Beethoven5_1.json").then(function(jsonData) {
   console.error("Error loading the JSON file:", error);
 });
 
-// Function to process the data remains unchanged
 function processMusicData(data) {
-  const intervals = {};
+  const intervals = [];
   const intervalDuration = 5; // seconds
 
   // Determine the total duration of the piece
@@ -28,22 +27,29 @@ function processMusicData(data) {
   // Calculate how many intervals we have
   const numberOfIntervals = Math.ceil(totalDuration / intervalDuration);
 
-  // Initialize intervals dictionary
+  // Initialize intervals array with dictionaries for instrument activity
   for (let i = 0; i < numberOfIntervals; i++) {
-    intervals[i] = {};
+    intervals.push({
+      intervalId: i,
+      instruments: {},
+      startTime: i * intervalDuration,
+      endTime: (i + 1) * intervalDuration
+    });
     data.tracks.forEach(track => {
-      intervals[i][track.name] = 0; // Initialize each instrument as not playing
+      if (track.instrument && track.instrument.name) {
+        intervals[i].instruments[track.instrument.name] = 0; // Initialize each instrument as not playing
+      }
     });
   }
 
-  // Check each note to see if it plays in each interval
+  // Assign note activity to intervals
   data.tracks.forEach(track => {
     track.notes.forEach(note => {
       const startInterval = Math.floor(note.time / intervalDuration);
       const endInterval = Math.floor((note.time + note.duration) / intervalDuration);
       for (let i = startInterval; i <= endInterval; i++) {
-        if (intervals[i]) {
-          intervals[i][track.name] = 1; // Mark as playing
+        if (intervals[i] && track.instrument && track.instrument.name) {
+          intervals[i].instruments[track.instrument.name] = 1; // Mark as playing
         }
       }
     });

@@ -91,6 +91,12 @@ class Timeline {
     wrangleData() {
         let vis = this;
 
+        // notes for wrangling the data:
+            // MIDI ticks to milliseconds formula = 60000 / (BPM * PPQ)
+
+        // algorithm
+            // what we want: for each part playing, the height of the area chart will increase
+
         // (1) Group data by instrument (could be easier if already grouped in JSON)
         // (2) Group data by timecode 
         // (3) 
@@ -98,7 +104,10 @@ class Timeline {
         // for each track if time is the same but note is not the same
         // count each note as one instrument 
 
-        
+        // and we were saying there's a world where we can do it by interval? Why did we want to sort again?
+
+
+
         // Update the visualization
         vis.updateVis();
     }
