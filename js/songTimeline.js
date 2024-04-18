@@ -12,6 +12,7 @@ class Timeline {
         this.data = data;
         this.displayData = [];
 
+        console.log(this.data);
         this.initVis();
     }
 
@@ -91,27 +92,12 @@ class Timeline {
     wrangleData() {
         let vis = this;
 
-        // notes for wrangling the data:
-            // MIDI ticks to milliseconds formula = 60000 / (BPM * PPQ)
-
-        // algorithm
-            // what we want: for each part playing, the height of the area chart will increase
-
-        // (1) Group data by instrument (could be easier if already grouped in JSON)
-        // (2) Group data by timecode 
-        // (3) 
-
-        // for each track if time is the same but note is not the same
-        // count each note as one instrument 
-
-        // and we were saying there's a world where we can do it by interval? Why did we want to sort again?
-
-
+        this.displayData = processMusicData(vis.data);
+        console.log(this.displayData);
 
         // Update the visualization
         vis.updateVis();
     }
-
 
 
     /*
@@ -121,6 +107,27 @@ class Timeline {
     updateVis() {
         let vis = this;
 
+        vis.x.domain(d3.extent(vis.displayData, d => d.startTime));
+        // makes y-axis max slightly bigger than the max
+	    let yMax = Math.ceil(12 * 1.1 / 10) * 10;
+        vis.y.domain([0, yMax]);
 
+        vis.area = d3.area()
+            .curve(d3.curveStepAfter)
+            .x(d => vis.x(d.startTime))
+            .y0(vis.height)
+            .y1(function (d) {
+                return(vis.y(Object.values(d.instruments).reduce((a, b) => a + b, 0)));   
+            });
+        
+        vis.timePath.datum(vis.displayData)
+            .attr("d", vis.area)
+            .attr("fill", "#C3B1E1")
+            .attr("stroke", "#884EA0")
+            .attr("stroke-width", 1);
+        
+        // Update axes
+        vis.svg.select(".y-axis").call(vis.yAxis);
+        vis.svg.select(".x-axis").call(vis.xAxis);
     }
 }
