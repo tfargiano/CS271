@@ -26,7 +26,10 @@ function processMusicData(data) {
       intervalId: i,
       instruments: {},
       startTime: i * intervalDuration,
-      endTime: (i + 1) * intervalDuration
+      endTime: (i + 1) * intervalDuration,
+      velocitySum: 0,
+      velocityDenom: 0,
+      velocityAvg: 0
     });
     data.tracks.forEach(track => {
       intervals[i]["instruments"][track.name] = 0; // Initialize each instrument as not playing
@@ -41,10 +44,19 @@ function processMusicData(data) {
       for (let i = startInterval; i <= endInterval; i++) {
         if (intervals[i]) {
           intervals[i]["instruments"][track.name] = 1; // Mark as playing
+          intervals[i]["velocitySum"] = intervals[i]["velocitySum"] + note.velocity; // Sum note velocities in interval
+          intervals[i]["velocityDenom"] = intervals[i]["velocityDenom"] + 1; // Count number of notes in interval
         }
       }
     });
   });
+
+  for (let i = 0; i < numberOfIntervals; i++) {
+    if (intervals[i]["velocityDenom"] > 0) { // checks there are notes in interval (prevent div by 0)
+    intervals[i]["velocityAvg"] = intervals[i]["velocitySum"] / intervals[i]["velocityDenom"] // Get average velocity in each interval
+    }
+    // don't need to explicitly write else clause; default is that velocityAvg = 0
+  }
 
   return intervals;
 }
