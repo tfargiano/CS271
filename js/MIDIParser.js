@@ -51,11 +51,12 @@ function processMusicData(data) {
     });
   });
 
+  // Get average velocity in each interval
   for (let i = 0; i < numberOfIntervals; i++) {
-    if (intervals[i]["velocityDenom"] > 0) { // checks there are notes in interval (prevent div by 0)
-    intervals[i]["velocityAvg"] = intervals[i]["velocitySum"] / intervals[i]["velocityDenom"] // Get average velocity in each interval
+    if (intervals[i]["velocityDenom"] > 0) { // Checks there are notes in interval (prevent div by 0)
+      intervals[i]["velocityAvg"] = intervals[i]["velocitySum"] / intervals[i]["velocityDenom"]
     }
-    // don't need to explicitly write else clause; default is that velocityAvg = 0
+    // Don't need to explicitly write else clause; default is that velocityAvg = 0
   }
 
   return intervals;

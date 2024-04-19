@@ -125,6 +125,13 @@ class Timeline {
             .attr("fill", "#C3B1E1")
             .attr("stroke", "#884EA0")
             .attr("stroke-width", 1);
+
+        // fill attribute we can change based on velocity data
+        // idea 1: color bar that is continuous
+        // idea 2: color bar that is discrete, and perhaps contains only x amount of levels scaled by max(velocity)
+        // .attr("fill", function(d) { return (d.val > c ? "orange" : "yellow"); });
+
+
         
         // Update axes
         vis.svg.select(".y-axis").call(vis.yAxis);
