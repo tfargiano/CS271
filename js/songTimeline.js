@@ -1,7 +1,7 @@
 /*
- * AreaChart - Object constructor function
+ * Timeline - Object constructor function
  * @param _parentElement 	-- the HTML element in which to draw the area chart
- * @param _data						-- the dataset 'household characteristics'
+ * @param _data						-- the MIDI dataset as a JSON
 */
 
 
@@ -76,6 +76,10 @@ class Timeline {
                         const fromDate = vis.x.invert(s0);
                         const toDate = vis.x.invert(s1);
                         brushed(fromDate, toDate);
+
+                        // pass the selection (i.e. filtered data) to zoomedRegion class ??
+                        let zoomedRegion;
+                        zoomedRegion = new ZoomedRegion("zoomedRegion", selection)
                     }
                 });
         brushGroup.call(brush);
