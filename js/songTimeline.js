@@ -64,14 +64,18 @@ class Timeline {
         vis.timePath = vis.svg.append("path")
             .attr("class", "area");
 
-        // Append area gradient  so it is similarly behind the brush overlaay
-        vis.gradient = vis.svg.append("defs")
+        // Append area gradient so it is similarly behind the brush overlaay
+        vis.gradientDefs = vis.svg.append("defs")
             .append("linearGradient")
             .attr("id", "velocityGradient")
             .attr("x1", "0%")
             .attr("x2", "100%")
             .attr("y1", "0%")
             .attr("y2", "0%");
+
+        // Append the area path that uses the gradient
+        vis.gradient = vis.svg.append("path")
+            .attr("classs", "gradient");
 
         // Add X-axis Label
         vis.svg.append("text")
@@ -89,7 +93,6 @@ class Timeline {
             .attr("y", -vis.margin.left + 15)  // Position to the left of the y-axis
             .attr("x", -vis.height / 2)  // Position at the middle of the y-axis, adjusted for height
             .text("Number of Parts");  // Replace with your actual axis description
-
 
         let brushGroup = vis.svg.append("g")
             .attr("class", "brush")
@@ -128,7 +131,7 @@ class Timeline {
         console.log(vis.displayData);
 
         let numStops = vis.displayData.length;
-        vis.gradient.selectAll("stop")
+        vis.gradientDefs.selectAll("stop")
             .data(vis.displayData)
             .enter()
             .append("stop")
@@ -178,8 +181,7 @@ class Timeline {
         // .attr("fill", function(d) { return (d.val > c ? "orange" : "yellow"); });
 
         // Draw the area
-        vis.svg.append("path")
-            .datum(vis.displayData) // Bind data
+        vis.gradient.datum(vis.displayData) // Bind data
             .attr("d", vis.area)
             .attr("fill", "url(#velocityGradient)") // Use the gradient for fill
             .attr("stroke", "#884EA0")
