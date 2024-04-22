@@ -29,7 +29,9 @@ function processMusicData(data) {
       endTime: (i + 1) * intervalDuration,
       velocitySum: 0,
       velocityDenom: 0,
-      velocityAvg: 0
+      velocityAvg: 0,
+      stereoL: 0,
+      stereoR: 0
     });
     data.tracks.forEach(track => {
       intervals[i]["instruments"][track.name] = 0; // Initialize each instrument as not playing
