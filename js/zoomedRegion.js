@@ -3,7 +3,7 @@ class ZoomedRegion {
         this.parentElement = document.getElementById(parentElementId);
         this.data = data;
         this.startTick = 7000;
-        this.endTick = 9000;
+        this.endTick = 8500;
         this.displayData = [];
         // console.log(this.data);
         this.initVis();
@@ -11,12 +11,16 @@ class ZoomedRegion {
 
     initVis() {
         this.vfRenderer = new Vex.Flow.Renderer(this.parentElement, Vex.Flow.Renderer.Backends.SVG);
-        this.vfRenderer.resize(1200, 800);
+        this.vfRenderer.resize(1200, 16000);
         this.context = this.vfRenderer.getContext();
+        this.data.tracks.forEach((track, index) => {
+            this.tracknum = index;
+            this.prepareData();
+            this.render();
+        });
         // this.stave = new Vex.Flow.Stave(10, 40, 750);
         // this.stave.addClef("treble").addTimeSignature("2/4").setContext(this.context).draw();
-        this.prepareData();
-        this.render();
+
     }
 
     prepareData() {
@@ -28,7 +32,10 @@ class ZoomedRegion {
         // console.log("End M: " + endMeasure);
 
         // this.data.track.forEach(track)
-        const track = this.data.tracks[0];
+
+
+
+        const track = this.data.tracks[this.tracknum];
         const notes = track.notes.filter(note => note.ticks >= startMeasure && note.ticks < endMeasure)
             .map(note => {
                 let noteParts = note.name.match(/([A-G])(#|b)?(\d+)/);
@@ -82,7 +89,7 @@ class ZoomedRegion {
         let staveX = 0; // X position for the first stave, slightly indented
         const staveWidth = 200; // Define stave width
         const staveSpacing = 0; // Spacing between staves
-        let staveY = 50; // Start staves lower to avoid cutting off high notes
+        let staveY = 50 + 100 * this.tracknum; // Start staves lower to avoid cutting off high notes
         let i = 0;
 
 
@@ -136,10 +143,13 @@ class ZoomedRegion {
                     }
                     notesByTick[note[1]].push(note[0]);
                 });
-                console.log(notesByTick);
+                console.log(measureNotes);
 
                 let startRest = measureNotes[0][1] - currentTick;
+                let endRest = currentTick + measureLengthInTicks - measureNotes[measureNotes.length-1][1] - Math.round(measureNotes[measureNotes.length-1][0].ticks["numerator"]/21.3333333)
+                console.log(measureNotes[measureNotes.length-1][0].ticks["numerator"])
                 console.log(startRest)
+                console.log(endRest)
 
                 let measureNotesLow = [];
                 let measureNotesHigh = [];
@@ -170,6 +180,19 @@ class ZoomedRegion {
                 });
                 // console.log(measureNotesLow);
                 // console.log(measureNotesHigh);
+                if (endRest > 0) {
+                    let rest = new Vex.Flow.StaveNote({
+                        keys: ["b/4"], // Position does not matter for rests
+                        duration: this.mapDuration(endRest/2, currentTick) + "r" // Half note rest
+                        // align_center: true
+                    });
+                    measureNotesLow.push(rest);
+                    if (measureNotesHigh.length > 0) {
+                        measureNotesHigh.push(rest);
+                    }
+
+                    // measureNotesHigh.push(rest);
+                }
 
 
 
