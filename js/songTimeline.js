@@ -73,6 +73,24 @@ class Timeline {
             .attr("y1", "0%")
             .attr("y2", "0%");
 
+        // Add X-axis Label
+        vis.svg.append("text")
+            .attr("class", "x-axis-label")
+            .attr("text-anchor", "middle")
+            .attr("x", vis.width / 2)  // Position at the middle of the x-axis
+            .attr("y", vis.height + vis.margin.bottom - 5)  // Adjust position to just below the x-axis
+            .text("Time (s)");  // Replace with your actual axis description
+
+        // Add Y-axis Label
+        vis.svg.append("text")
+            .attr("class", "y-axis-label")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")  // Rotate label for vertical orientation
+            .attr("y", -vis.margin.left + 15)  // Position to the left of the y-axis
+            .attr("x", -vis.height / 2)  // Position at the middle of the y-axis, adjusted for height
+            .text("Number of Parts");  // Replace with your actual axis description
+
+
         let brushGroup = vis.svg.append("g")
             .attr("class", "brush")
         
@@ -109,7 +127,7 @@ class Timeline {
         vis.displayData = processMusicData(vis.data);
         console.log(vis.displayData);
 
-        const numStops = vis.displayData.length;
+        let numStops = vis.displayData.length;
         vis.gradient.selectAll("stop")
             .data(vis.displayData)
             .enter()
@@ -132,8 +150,13 @@ class Timeline {
 
         vis.x.domain(d3.extent(vis.displayData, d => d.startTime));
         // makes y-axis max slightly bigger than the max
-	    let yMax = Math.ceil(12 * 1.1 / 10) * 10;
-        vis.y.domain([0, yMax]);
+	    // let yMax = Math.ceil(12 * 1.1 / 10) * 10;
+        vis.y.domain([0, 14]);
+
+        // Compute tick values for every 100 seconds 
+        let startTime = d3.min(vis.displayData, d => d.startTime);
+        let endTime = d3.max(vis.displayData, d => d.startTime);
+        let tickValues = d3.range(startTime, endTime, 100); 
 
         vis.area = d3.area()
             .curve(d3.curveStepAfter)
@@ -161,6 +184,14 @@ class Timeline {
             .attr("fill", "url(#velocityGradient)") // Use the gradient for fill
             .attr("stroke", "#884EA0")
             .attr("stroke-width", 1);
+
+        // Configure x-axis with custom ticks
+        vis.xAxis = d3.axisBottom(vis.x)
+            .tickValues(tickValues)
+            .tickFormat(d => `${d}s`);  // Convert milliseconds to seconds for display
+
+        // Update x-axis with new configuration
+        vis.svg.select(".x-axis").call(vis.xAxis);
 
         // Update axes
         vis.svg.select(".y-axis").call(vis.yAxis);
