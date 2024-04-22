@@ -4,7 +4,7 @@
 // Function to process the data remains unchanged
 function processMusicData(data) {
   const intervals = [];
-  const intervalDuration = 2.5; // seconds
+  const intervalDuration = 1; // seconds
 
   // Determine the total duration of the piece
   let totalDuration = 0;
