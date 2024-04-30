@@ -1,10 +1,10 @@
 // Description: This file contains the code to parse MIDI files and process the data.
 // Called by songTimeline.js to process the data and create the visualization.
+const intervalDuration = 1; 
 
 // Function to process the data remains unchanged
 function processMusicData(data) {
-  const intervals = [];
-  const intervalDuration = 1; // seconds
+  let intervals = [];
 
   // Determine the total duration of the piece
   let totalDuration = 0;
@@ -31,7 +31,9 @@ function processMusicData(data) {
       velocityDenom: 0,
       velocityAvg: 0,
       stereoL: 0,
-      stereoR: 0
+      stereoR: 0,
+      startTick: 0,
+      endTick: 0
     });
     data.tracks.forEach(track => {
       intervals[i]["instruments"][track.name] = 0; // Initialize each instrument as not playing
@@ -60,6 +62,33 @@ function processMusicData(data) {
     }
     // Don't need to explicitly write else clause; default is that velocityAvg = 0
   }
+
+  return intervals;
+}
+
+function updateIntervalTicks(data, intervals) {
+  // Iterate over each track in the data to handle all notes
+    data.tracks.forEach(track => {
+    // Aggregate all values from notes and control changes
+    let allNotes = [];
+    
+    // Extract time and ticks from notes
+    if (track.notes) {
+      track.notes.forEach(note => allNotes.push({ time: note.time, ticks: note.ticks }));
+    }
+
+    // Sort notes by time to easily find min and max ticks per interval based on time
+    allNotes.sort((a, b) => a.time - b.time);
+
+    // Calculate intervals based on notes' times
+    intervals.forEach(interval => {
+      const notesInInterval = allNotes.filter(note => note.time >= interval.startTime && note.time < interval.endTime);
+      if (notesInInterval.length > 0) {
+        interval.startTick = notesInInterval[0].ticks;
+        interval.endTick = notesInInterval[notesInInterval.length - 1].ticks;
+      }
+    });
+  });
 
   return intervals;
 }

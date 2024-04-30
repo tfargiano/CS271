@@ -44,7 +44,7 @@ class ZoomedRegion {
                     return null;
                 }
                 let noteName = `${noteParts[1].toUpperCase()}${noteParts[2] || ""}/${noteParts[3]}`;
-                console.log(note.ticks);
+                // console.log(note.ticks);
                 return [new Vex.Flow.StaveNote({
                     keys: [noteName],
                     duration: vis.mapDuration(note.durationTicks, note.ticks)
@@ -143,13 +143,13 @@ class ZoomedRegion {
                     }
                     notesByTick[note[1]].push(note[0]);
                 });
-                console.log(measureNotes);
+                // console.log(measureNotes);
 
                 let startRest = measureNotes[0][1] - currentTick;
                 let endRest = currentTick + measureLengthInTicks - measureNotes[measureNotes.length-1][1] - Math.round(measureNotes[measureNotes.length-1][0].ticks["numerator"]/21.3333333)
-                console.log(measureNotes[measureNotes.length-1][0].ticks["numerator"])
-                console.log(startRest)
-                console.log(endRest)
+                // console.log(measureNotes[measureNotes.length-1][0].ticks["numerator"])
+                // console.log(startRest)
+                // console.log(endRest)
 
                 let measureNotesLow = [];
                 let measureNotesHigh = [];

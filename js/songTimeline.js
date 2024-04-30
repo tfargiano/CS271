@@ -9,10 +9,10 @@ class Timeline {
 
     constructor(parentElement, data) {
         this.parentElement = parentElement;
-        this.data = data;
+        this.inputData = data;
+        this.updatedData = [];
         this.displayData = [];
 
-        console.log(this.data);
         this.initVis();
     }
 
@@ -103,14 +103,15 @@ class Timeline {
                     const { selection } = event;
                     if (selection) {
                         const [s0, s1] = selection;
-                        const fromDate = vis.x.invert(s0);
-                        const toDate = vis.x.invert(s1);
-                        brushed(fromDate, toDate);
 
-                        // pass the selection (i.e. filtered data) to zoomedRegion class ??
-                        // annika code
+                        let interval1 = vis.updatedData[s0];
+                        let interval2 = vis.updatedData[s1];
+                        let ticks = [interval1.startTick, interval2.endTick];
+
+                        console.log(ticks);
+                        
                         let zoomedRegion;
-                        zoomedRegion = new ZoomedRegion("zoomedRegion", selection)
+                        zoomedRegion = new ZoomedRegion("zoomedRegion", ticks)
                     }
                 });
         brushGroup.call(brush);
@@ -127,12 +128,13 @@ class Timeline {
     wrangleData() {
         let vis = this;
 
-        vis.displayData = processMusicData(vis.data);
-        console.log(vis.displayData);
+        let intervals = processMusicData(vis.inputData);
+        vis.updatedData = updateIntervalTicks(vis.inputData, intervals)
+        console.log(vis.updatedData);
 
-        let numStops = vis.displayData.length;
+        let numStops = vis.updatedData.length;
         vis.gradientDefs.selectAll("stop")
-            .data(vis.displayData)
+            .data(vis.updatedData)
             .enter()
             .append("stop")
             .attr("offset", (d, i) => `${(i / (numStops - 1)) * 100}%`)
@@ -151,15 +153,15 @@ class Timeline {
         let vis = this;
         // make the selection get the start tick and end tick
 
-        vis.x.domain(d3.extent(vis.displayData, d => d.startTime));
+        vis.x.domain(d3.extent(vis.updatedData, d => d.startTime));
         // makes y-axis max slightly bigger than the max
 	    // let yMax = Math.ceil(12 * 1.1 / 10) * 10;
         vis.y.domain([0, 14]);
 
-        // Compute tick values for every 100 seconds 
-        let startTime = d3.min(vis.displayData, d => d.startTime);
-        let endTime = d3.max(vis.displayData, d => d.startTime);
-        let tickValues = d3.range(startTime, endTime, 100); 
+        // Compute axis mark values for every 100 seconds 
+        let startTime = d3.min(vis.updatedData, d => d.startTime);
+        let endTime = d3.max(vis.updatedData, d => d.startTime);
+        let axisMarkValues = d3.range(startTime, endTime, 100); 
 
         vis.area = d3.area()
             .curve(d3.curveStepAfter)
@@ -169,19 +171,14 @@ class Timeline {
                 return(vis.y(Object.values(d.instruments).reduce((a, b) => a + b, 0)));   
             });
 
-        vis.timePath.datum(vis.displayData)
+        vis.timePath.datum(vis.updatedData)
             .attr("d", vis.area)
             .attr("fill", "#C3B1E1")
             .attr("stroke", "#884EA0")
             .attr("stroke-width", 1);
 
-        // fill attribute we can change based on velocity data
-        // idea 1: color bar that is continuous
-        // idea 2: color bar that is discrete, and perhaps contains only x amount of levels scaled by max(velocity)
-        // .attr("fill", function(d) { return (d.val > c ? "orange" : "yellow"); });
-
         // Draw the area
-        vis.gradient.datum(vis.displayData) // Bind data
+        vis.gradient.datum(vis.updatedData) // Bind data
             .attr("d", vis.area)
             .attr("fill", "url(#velocityGradient)") // Use the gradient for fill
             .attr("stroke", "#884EA0")
@@ -189,7 +186,7 @@ class Timeline {
 
         // Configure x-axis with custom ticks
         vis.xAxis = d3.axisBottom(vis.x)
-            .tickValues(tickValues)
+            .tickValues(axisMarkValues)
             .tickFormat(d => `${d}s`);  // Convert milliseconds to seconds for display
 
         // Update x-axis with new configuration
@@ -198,5 +195,12 @@ class Timeline {
         // Update axes
         vis.svg.select(".y-axis").call(vis.yAxis);
         vis.svg.select(".x-axis").call(vis.xAxis);
+    }
+
+    returnTicks() {
+        let tick1, tick2
+
+
+        return([tick1, tick2])
     }
 }
