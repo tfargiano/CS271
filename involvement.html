@@ -10,8 +10,14 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
     />
-    <link rel="stylesheet" href="styles.css" />
     <html data-theme="light"></html>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
@@ -19,7 +25,7 @@
       <nav class="navbar">
         <ul>
           <li>
-            <h1><a href="home">ScorEncoder</a></h1>
+            <h1 id="site-title"><a href="home">ScorEncoder</a></h1>
           </li>
         </ul>
         <li>
@@ -34,25 +40,29 @@
     </header>
 
     <main class="container">
-      <div class="row">
-        <div
-          id="songTimeline"
-          class="col-md-12"
-          data-tooltip="Click and drag an interval for notational view."
-        ></div>
-      </div>
-      <div class="row">
-        <div id="focusRegion"></div>
-      </div>
+      <article id="article">
+        <div class="row">
+          <div
+            id="songTimeline"
+            class="col-md-12"
+            data-tooltip="Click and drag an interval for notational view."
+          ></div>
+        </div>
+      </article>
+      <article id="article">
+        <div class="row">
+          <div id="focusRegion"></div>
+        </div>
+      </article>
     </main>
 
     <footer class="container">
-        <small
-          >by Tim Fargiano, Annika Huprikar, Michael Omole, Jason Wang • for
-          CompSci 271 •
-          <a href="https://github.com/tfargiano/CS271">Source code</a></small
-        >
-      </footer>
+      <small
+        >by Tim Fargiano, Annika Huprikar, Michael Omole, Jason Wang • for
+        CompSci 271 •
+        <a href="https://github.com/tfargiano/CS271">Source code</a></small
+      >
+    </footer>
     <!-- embedding JS libraries -->
     <script
       src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
