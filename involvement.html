@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ScorEncoder</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <html data-theme="light"></html>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <header class="container">
+      <nav class="navbar">
+        <ul>
+          <li>
+            <h1 id="site-title"><a href="home">ScorEncoder</a></h1>
+          </li>
+        </ul>
+        <li>
+          <details class="dropdown">
+            <summary>Orchestral Involvement</summary>
+            <ul dir="rtl">
+              <li><a href="attack">Attack and Velocity</a></li>
+            </ul>
+          </details>
+        </li>
+      </nav>
+    </header>
+
+    <main class="container">
+      <article>
+        <header>
+          <h2>Orchestral Involvement</h2>
+        </header>
+        The music timeline encodes the number of instruments playing (orchestral
+        involvement) at every particular moment in the piece (1 second tick
+        intervals). The color encodes the intensity of sound based on the attack
+        of the notes.
+      </article>
+      <article id="article">
+        <div class="row">
+          <div
+            id="songTimeline"
+            class="col-md-12"
+            data-tooltip="Click and drag an interval for notational view."
+          ></div>
+        </div>
+      </article>
+      <article id="article">
+        <div class="row">
+          <div id="focusRegion"></div>
+        </div>
+      </article>
+    </main>
+
+    <footer class="container">
+      <small
+        >by Tim Fargiano, Annika Huprikar, Michael Omole, Jason Wang • for
+        CompSci 271 •
+        <a href="https://github.com/tfargiano/CS271">Source code</a></small
+      >
+    </footer>
+    <!-- embedding JS libraries -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- d3 -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Your implementation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vexflow/3.0.9/vexflow-min.js"></script>
+    <script src="js/MIDIParser.js"></script>
+    <script src="js/songTimeline.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/zoomedRegion.js"></script>
+  </body>
+</html>

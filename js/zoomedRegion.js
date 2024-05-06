@@ -44,7 +44,7 @@ class ZoomedRegion {
                     return null;
                 }
                 let noteName = `${noteParts[1].toUpperCase()}${noteParts[2] || ""}/${noteParts[3]}`;
-                console.log(note.ticks);
+                // console.log(note.ticks);
                 return [new Vex.Flow.StaveNote({
                     keys: [noteName],
                     duration: vis.mapDuration(note.durationTicks, note.ticks)

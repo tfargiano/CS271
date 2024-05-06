@@ -1,4 +1,10 @@
-.area {
-    fill: url(#area-gradient);
-    stroke-width: 0px;
+.navbar #site-title {
+    color: #017FC0;
+    font-family: "Oleo Script", system-ui;
+    font-size: 36pt;
+}
+
+
+body {
+    background-color: rgb(238, 238, 238);
 }
