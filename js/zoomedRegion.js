@@ -104,7 +104,12 @@ class ZoomedRegion {
             if (measureNotes.length === 0) {
                 if (i < 1) {
                     let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
-                    stave.addClef("treble").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
+                    if (this.tracknum===3) {
+                        stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
+                    }
+                    else {
+                        stave.addClef("treble").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
+                    }
                     let rest = new Vex.Flow.StaveNote({
                         keys: ["b/4"], // Position does not matter for rests
                         duration: "hr", // Half note rest
@@ -143,13 +148,13 @@ class ZoomedRegion {
                     }
                     notesByTick[note[1]].push(note[0]);
                 });
-                console.log(measureNotes);
+                // console.log(measureNotes);
 
                 let startRest = measureNotes[0][1] - currentTick;
                 let endRest = currentTick + measureLengthInTicks - measureNotes[measureNotes.length-1][1] - Math.round(measureNotes[measureNotes.length-1][0].ticks["numerator"]/21.3333333)
-                console.log(measureNotes[measureNotes.length-1][0].ticks["numerator"])
-                console.log(startRest)
-                console.log(endRest)
+                // console.log(measureNotes[measureNotes.length-1][0].ticks["numerator"])
+                // console.log(startRest)
+                // console.log(endRest)
 
                 let measureNotesLow = [];
                 let measureNotesHigh = [];
@@ -207,7 +212,15 @@ class ZoomedRegion {
 
                     if (i < 1) {
                         let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
-                        stave.addClef("treble").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
+                        if (this.tracknum===3) {
+                            stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
+                            measureNotesLow.forEach(note => note.clef = "bass");
+                            measureNotesHigh.forEach(note => note.clef = "bass");
+                            console.log("JA", measureNotesLow);
+                        }
+                        else {
+                            stave.addClef("treble").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
+                        }
                         Vex.Flow.Formatter.FormatAndDraw(this.context, stave, measureNotesLow);
                         if (measureNotesHigh.length > 0) {
                             Vex.Flow.Formatter.FormatAndDraw(this.context, stave, measureNotesHigh);
@@ -215,6 +228,14 @@ class ZoomedRegion {
                         staveX += staveWidth + 50 + staveSpacing;
                     } else {
                         let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth);
+                        if (this.tracknum===3) {
+                            // stave.addClef("bass").setContext(this.context).draw();
+                            measureNotesLow.forEach(note => note.clef = "bass");
+                            measureNotesHigh.forEach(note => note.clef = "bass");
+                            console.log("JA", measureNotesLow);
+                            // stave.setContext(this.context).draw();
+
+                        }
                         stave.setContext(this.context).draw();
                         Vex.Flow.Formatter.FormatAndDraw(this.context, stave, measureNotesLow);
                         if (measureNotesHigh.length > 0) {
