@@ -31,9 +31,9 @@ class stereoPanArrow {
 
         vis.arrowGroup.append('polygon')
             .attr('points', initialPoints)
-            .attr('fill', '#000099')
-            .attr('stroke', '#0000ff')
-            .attr('stroke-width', 1 * vis.scale)
+            .attr('fill', '#FF0000')
+            .attr('stroke', '#000000')
+            .attr('stroke-width', 1.5)
             .attr('transform', `rotate(${this.angle}, 0, 0)`); // Rotate around the center (0,0)
     }
 
