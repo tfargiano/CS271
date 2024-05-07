@@ -4,7 +4,6 @@
  * @param _data						-- the MIDI dataset as a JSON
 */
 
-
 class Timeline {
 
     constructor(parentElement, data) {
@@ -23,11 +22,11 @@ class Timeline {
     initVis() {
         let vis = this;
 
-        vis.margin = {top: 20, right: 10, bottom: 20, left: 40};
+        vis.margin = {top: 50, right: 10, bottom: 40, left: 40};
 
         // gets widths based on parent element
         vis.width = document.getElementById(vis.parentElement).getBoundingClientRect().width - vis.margin.left - vis.margin.right;
-        vis.height = 300 - vis.margin.top - vis.margin.bottom;
+        vis.height = 400 - vis.margin.top - vis.margin.bottom;
 
 
         // SVG drawing area
@@ -37,7 +36,7 @@ class Timeline {
             .append("g")
             .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
         
-        vis.colorScale = d3.scaleLinear().domain([0,1]).range(["#0000ff", "#ffff00"]);
+        vis.colorScale = d3.scaleLinear().domain([-1, -0.5, 0, 0.5, 1]).range(["#ffffff", "#9999ff", "#6666ff", "#9966ff","#000000"]);
 
         // Scales and axes
         vis.x = d3.scaleTime()
@@ -82,7 +81,7 @@ class Timeline {
             .attr("class", "x-axis-label")
             .attr("text-anchor", "middle")
             .attr("x", vis.width / 2)  // Position at the middle of the x-axis
-            .attr("y", vis.height + vis.margin.bottom - 5)  // Adjust position to just below the x-axis
+            .attr("y", vis.height + vis.margin.bottom - 10)  // Adjust position to just below the x-axis
             .text("Time (s)");  // Replace with your actual axis description
 
         // Add Y-axis Label
@@ -92,7 +91,12 @@ class Timeline {
             .attr("transform", "rotate(-90)")  // Rotate label for vertical orientation
             .attr("y", -vis.margin.left + 15)  // Position to the left of the y-axis
             .attr("x", -vis.height / 2)  // Position at the middle of the y-axis, adjusted for height
-            .text("Number of Parts");  // Replace with your actual axis description
+            .text("Number of Parts Playing");  // Replace with your actual axis description
+
+        // add legend
+        vis.legendGroup = vis.svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${(vis.width / 2)}, 0)`);
 
         let brushGroup = vis.svg.append("g")
             .attr("class", "brush")
@@ -195,12 +199,24 @@ class Timeline {
         // Update axes
         vis.svg.select(".y-axis").call(vis.yAxis);
         vis.svg.select(".x-axis").call(vis.xAxis);
-    }
 
-    returnTicks() {
-        let tick1, tick2
+        // Create legend
+        vis.legend = new Legend(vis.colorScale, {
+            title: "Average Velocity",
+            ticks: 5,
+            tickFormat: ".2f",
+            tickSize: 10,
+            width: 200,
+            height: 50,
+            labelFormat: ".2f"
+        });
 
+        // call the legend
+        vis.legendGroup = vis.svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${(vis.width / 2) - 75}, -47)`);
 
-        return([tick1, tick2])
+        // Append the legend SVG node to the group
+        vis.legendGroup.node().appendChild(vis.legend);
     }
 }
