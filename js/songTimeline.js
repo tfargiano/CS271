@@ -36,7 +36,7 @@ class Timeline {
             .append("g")
             .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
         
-        vis.colorScale = d3.scaleLinear().domain([-1, -0.5, 0, 0.5, 1]).range(["#ffffff", "#9999ff", "#6666ff", "#9966ff","#000000"]);
+        vis.colorScale = d3.scaleLinear().domain([-1, -0.5, 0, 0.5, 1]).range(["#ffffff", "#9999ff", "#0000ff", "#0000cc","#000000"]);
 
         // Scales and axes
         vis.x = d3.scaleTime()
@@ -93,11 +93,6 @@ class Timeline {
             .attr("x", -vis.height / 2)  // Position at the middle of the y-axis, adjusted for height
             .text("Number of Parts Playing");  // Replace with your actual axis description
 
-        // add legend
-        vis.legendGroup = vis.svg.append("g")
-            .attr("class", "legend")
-            .attr("transform", `translate(${(vis.width / 2)}, 0)`);
-
         let brushGroup = vis.svg.append("g")
             .attr("class", "brush")
         
@@ -124,7 +119,17 @@ class Timeline {
         vis.wrangleData();
     }
 
-
+    updateColorScaleDomain(data) {
+        const velocities = data.map(d => d.velocityAvg);
+        const minVelocity = d3.min(velocities);
+        const maxVelocity = d3.max(velocities);
+    
+        // Create an array of five evenly spaced values across the velocity range
+        let domainValues = Array.from({length: 5}, (v, i) => minVelocity + i * (maxVelocity - minVelocity) / 4);
+    
+        return domainValues;
+    }
+    
     /*
      * Data wrangling
      */
@@ -135,6 +140,10 @@ class Timeline {
         let intervals = processMusicData(vis.inputData);
         vis.updatedData = updateIntervalTicks(vis.inputData, intervals)
         console.log(vis.updatedData);
+
+        // Update the color scale domain with interpolated values
+        let domainValues = vis.updateColorScaleDomain(vis.updatedData);
+        vis.colorScale.domain(domainValues);
 
         let numStops = vis.updatedData.length;
         vis.gradientDefs.selectAll("stop")
@@ -200,10 +209,15 @@ class Timeline {
         vis.svg.select(".y-axis").call(vis.yAxis);
         vis.svg.select(".x-axis").call(vis.xAxis);
 
+        // add legend
+        vis.legendGroup = vis.svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", `translate(${(vis.width / 2)}, 0)`);
+
         // Create legend
         vis.legend = new Legend(vis.colorScale, {
             title: "Average Velocity",
-            ticks: 5,
+            ticks: 6,
             tickFormat: ".2f",
             tickSize: 10,
             width: 200,
