@@ -242,7 +242,7 @@ class Timeline {
         // call the legend
         vis.legendGroup = vis.svg.append("g")
             .attr("class", "legend")
-            .attr("transform", `translate(${(vis.width / 2) - 75}, -47)`);
+            .attr("transform", `translate(${(vis.width / 2) - 100}, -47)`);
 
         // Append the legend SVG node to the group
         vis.legendGroup.node().appendChild(vis.legend);
