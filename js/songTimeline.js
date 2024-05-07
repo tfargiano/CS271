@@ -13,6 +13,7 @@ class Timeline {
         this.displayData = [];
 
         this.initVis();
+        this.initArrow();
     }
 
     /*
@@ -112,6 +113,10 @@ class Timeline {
         
                     let interval1 = vis.updatedData[s0];
                     let interval2 = vis.updatedData[s1];
+
+                    // send intervals to arrow to update
+                    arrowBrushed(interval1, interval2);
+                    console.log([interval1, interval2]);
         
                     // Check if data at indices is defined
                     if (!interval1 || !interval2) {
@@ -124,6 +129,11 @@ class Timeline {
                     
                     let zoomedRegion;
                     zoomedRegion = new ZoomedRegion("zoomedRegion", ticks)
+                }
+            })
+            .on("end", function(event) {
+                if (!event.selection) {
+                    vis.arrow.resetArrow(); // Reset arrow if there's no active selection
                 }
             });
         
@@ -231,7 +241,7 @@ class Timeline {
         // Create legend
         vis.legend = new Legend(vis.colorScale, {
             title: "Average Velocity",
-            ticks: 6,
+            ticks: 0,
             tickFormat: ".2f",
             tickSize: 10,
             width: 200,
@@ -242,9 +252,18 @@ class Timeline {
         // call the legend
         vis.legendGroup = vis.svg.append("g")
             .attr("class", "legend")
-            .attr("transform", `translate(${(vis.width / 2) - 100}, -47)`);
+            .attr("transform", `translate(${0}, -40)`);
 
         // Append the legend SVG node to the group
         vis.legendGroup.node().appendChild(vis.legend);
     }
+
+    initArrow() {
+        let vis = this;
+        // Set the position to the upper right corner, taking into account the margin and desired offset
+        let position = { x: vis.width - 10, y: 20 }; // Adjusted for upper right
+        let scale = 0.66; // Adjust scale according to the available space
+        vis.arrow = new stereoPanArrow(vis.parentElement, position, scale);
+    }
+    
 }
