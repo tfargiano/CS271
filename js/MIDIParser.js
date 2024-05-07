@@ -5,6 +5,10 @@ const intervalDuration = 1;
 // Function to process the data remains unchanged
 function processMusicData(data) {
   let intervals = [];
+  let tempos = data.header.tempos;
+  // ensures tempos are sorted by ticks
+  tempos.sort((a, b) => a.ticks - b.ticks);
+  let ppq = data.header.ppq;
 
   // Determine the total duration of the piece
   let totalDuration = 0;
@@ -60,35 +64,40 @@ function processMusicData(data) {
     if (intervals[i]["velocityDenom"] > 0) { // Checks there are notes in interval (prevent div by 0)
       intervals[i]["velocityAvg"] = intervals[i]["velocitySum"] / intervals[i]["velocityDenom"]
     }
-    // Don't need to explicitly write else clause; default is that velocityAvg = 0
   }
+
+  // update intervals to calculate ticks
+  intervals.forEach(interval => {
+    interval.startTick = calculateTicksFromTime(interval.startTime, tempos, ppq);
+    interval.endTick = calculateTicksFromTime(interval.endTime, tempos, ppq);
+  });
 
   return intervals;
 }
 
-function updateIntervalTicks(data, intervals) {
-  // Iterate over each track in the data to handle all notes
-    data.tracks.forEach(track => {
-    // Aggregate all values from notes and control changes
-    let allNotes = [];
-    
-    // Extract time and ticks from notes
-    if (track.notes) {
-      track.notes.forEach(note => allNotes.push({ time: note.time, ticks: note.ticks }));
-    }
+function calculateTicksFromTime(timeInSeconds, tempos, ppq) {
+  let currentTicks = 0;
+  let lastTimeInSeconds = 0;  // Start time in seconds
+  let lastBPM = tempos[0].bpm;
 
-    // Sort notes by time to easily find min and max ticks per interval based on time
-    allNotes.sort((a, b) => a.time - b.time);
-
-    // Calculate intervals based on notes' times
-    intervals.forEach(interval => {
-      const notesInInterval = allNotes.filter(note => note.time >= interval.startTime && note.time < interval.endTime);
-      if (notesInInterval.length > 0) {
-        interval.startTick = notesInInterval[0].ticks;
-        interval.endTick = notesInInterval[notesInInterval.length - 1].ticks;
+  for (const tempo of tempos) {
+      // Calculate the time in seconds at which this tempo change occurs
+      const tempoChangeTimeInSeconds = lastTimeInSeconds + (tempo.ticks / (lastBPM / 60 * ppq));
+      if (timeInSeconds < tempoChangeTimeInSeconds) {
+          // Calculate ticks for the period up to the current time if it's before the tempo change
+          currentTicks += (timeInSeconds - lastTimeInSeconds) * (lastBPM * ppq / 60);
+          return currentTicks;
       }
-    });
-  });
+      // Calculate ticks for the period up to the next tempo change
+      currentTicks += (tempoChangeTimeInSeconds - lastTimeInSeconds) * (lastBPM * ppq / 60);
+      lastTimeInSeconds = tempoChangeTimeInSeconds;
+      lastBPM = tempo.bpm;
+  }
 
-  return intervals;
+  // Handle time after the last known tempo change
+  if (timeInSeconds > lastTimeInSeconds) {
+      currentTicks += (timeInSeconds - lastTimeInSeconds) * (lastBPM * ppq / 60);
+  }
+
+  return currentTicks;
 }

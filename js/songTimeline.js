@@ -97,28 +97,43 @@ class Timeline {
             .attr("class", "brush")
         
         let brush = d3.brushX()
-                .extent([[0,0], [vis.width, vis.height]])
-                .on("start brush end", (event) => {
-                    const { selection } = event;
-                    if (selection) {
-                        const [s0, s1] = selection;
-
-                        let interval1 = vis.updatedData[s0];
-                        let interval2 = vis.updatedData[s1];
-                        let ticks = [interval1.startTick, interval2.endTick];
-
-                        console.log(ticks);
-                        
-                        let zoomedRegion;
-                        zoomedRegion = new ZoomedRegion("zoomedRegion", ticks)
+            .extent([[0,0], [vis.width, vis.height]])
+            .on("start brush end", (event) => {
+                const { selection } = event;
+                if (selection) {
+                    // Convert pixel coordinates to data indices or keys
+                    const [s0, s1] = selection.map(d => Math.floor(d / vis.width * vis.updatedData.length));
+                    
+                    // Check if indices are within bounds
+                    if (s0 < 0 || s0 >= vis.updatedData.length || s1 < 0 || s1 >= vis.updatedData.length) {
+                        console.error("Selection out of bounds:", s0, s1);
+                        return;
                     }
-                });
+        
+                    let interval1 = vis.updatedData[s0];
+                    let interval2 = vis.updatedData[s1];
+        
+                    // Check if data at indices is defined
+                    if (!interval1 || !interval2) {
+                        console.error("Undefined intervals at indices:", s0, s1);
+                        return;
+                    }
+        
+                    let ticks = [interval1.startTick, interval2.endTick];
+                    console.log(ticks);
+                    
+                    let zoomedRegion;
+                    zoomedRegion = new ZoomedRegion("zoomedRegion", ticks)
+                }
+            });
+        
         brushGroup.call(brush);
 
         // (Filter, aggregate, modify data)
         vis.wrangleData();
     }
 
+    // updates color scale for gradient based on velcoity averages of intervals in the piece
     updateColorScaleDomain(data) {
         const velocities = data.map(d => d.velocityAvg);
         const minVelocity = d3.min(velocities);
@@ -137,8 +152,7 @@ class Timeline {
     wrangleData() {
         let vis = this;
 
-        let intervals = processMusicData(vis.inputData);
-        vis.updatedData = updateIntervalTicks(vis.inputData, intervals)
+        vis.updatedData = processMusicData(vis.inputData);
         console.log(vis.updatedData);
 
         // Update the color scale domain with interpolated values
