@@ -8,3 +8,17 @@
 body {
     background-color: rgb(238, 238, 238);
 }
+
+.column1 {
+    width: 5%; /* Adjust as needed */
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.column2 {
+    width: 95%; /* Adjust as needed */
+    padding: 10px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
