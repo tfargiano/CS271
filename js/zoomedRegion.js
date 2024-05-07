@@ -5,18 +5,24 @@ class ZoomedRegion {
         this.startTick = 7000;
         this.endTick = 8500;
         this.displayData = [];
-        // console.log(this.data);
+        this.margin = {top: 20, right: 20, bottom: 20, left: 40};
+        // console.log(this.data.tracks);
         this.initVis();
     }
 
     initVis() {
         this.vfRenderer = new Vex.Flow.Renderer(this.parentElement, Vex.Flow.Renderer.Backends.SVG);
-        this.vfRenderer.resize(1200, 16000);
+        this.vfRenderer.resize(this.parentElement.getBoundingClientRect().width - this.margin.left - this.margin.right, 1400);
         this.context = this.vfRenderer.getContext();
         this.data.tracks.forEach((track, index) => {
-            this.tracknum = index;
-            this.prepareData();
-            this.render();
+            if (track.name === "pizzicato strings I" || track.name === "pizzicato strings II" || track.name === "pizzicato strings III") {
+                console.log(track.name)
+            } else {
+                this.tracknum = index;
+                // console.log(track.name);
+                this.prepareData();
+                this.render();
+            }
         });
         // this.stave = new Vex.Flow.Stave(10, 40, 750);
         // this.stave.addClef("treble").addTimeSignature("2/4").setContext(this.context).draw();
@@ -45,10 +51,25 @@ class ZoomedRegion {
                 }
                 let noteName = `${noteParts[1].toUpperCase()}${noteParts[2] || ""}/${noteParts[3]}`;
                 // console.log(note.ticks);
-                return [new Vex.Flow.StaveNote({
-                    keys: [noteName],
-                    duration: vis.mapDuration(note.durationTicks, note.ticks)
-                }), note.ticks];
+                console.log(this.data.tracks[this.tracknum].name)
+                if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
+                    return [new Vex.Flow.StaveNote({
+                        keys: [noteName],
+                        duration: vis.mapDuration(note.durationTicks, note.ticks),
+                        clef: "bass"
+                    }), note.ticks];
+                } else if (this.data.tracks[this.tracknum].name === "Viole") {
+                    return [new Vex.Flow.StaveNote({
+                        keys: [noteName],
+                        duration: vis.mapDuration(note.durationTicks, note.ticks),
+                        clef: "alto"
+                    }), note.ticks];
+                } else {
+                    return [new Vex.Flow.StaveNote({
+                        keys: [noteName],
+                        duration: vis.mapDuration(note.durationTicks, note.ticks)
+                    }), note.ticks];
+                }
             }).filter(n => n != null);
 
         this.displayData = notes;
@@ -69,6 +90,7 @@ class ZoomedRegion {
         else return "8";
     }
 
+
     getTempoAtTick(tick) {
         let currentTempo = this.data.header.tempos[0].bpm; // default to the first tempo
         let tempo_index = 0;
@@ -86,10 +108,16 @@ class ZoomedRegion {
         const measureLengthInTicks = this.data.header.ppq * 2; // Assuming 2/4 time
         let currentTick = Math.floor(this.startTick / measureLengthInTicks) * measureLengthInTicks;
 
-        let staveX = 0; // X position for the first stave, slightly indented
+        let staveX = 25; // X position for the first stave, slightly indented
         const staveWidth = 200; // Define stave width
         const staveSpacing = 0; // Spacing between staves
-        let staveY = 50 + 100 * this.tracknum; // Start staves lower to avoid cutting off high notes
+        if (this.tracknum === 11) {
+            var staveY = 100 + 100 * 10;
+        } else if (this.tracknum === 13) {
+            var staveY = 100 + 100 * 11;
+        } else {
+            var staveY = 100 + 100 * this.tracknum; // Start staves lower to avoid cutting off high notes
+        }
         let i = 0;
 
 
@@ -98,16 +126,18 @@ class ZoomedRegion {
 
             // Filter notes that start within the current measure
             let measureNotes = this.displayData.filter(note => note[1] >= currentTick && note[1] < measureEndTick);
+
             // console.log(measureNotes);
                 // .map(note => note[0]); // Extract StaveNotes from tuples
 
             if (measureNotes.length === 0) {
                 if (i < 1) {
                     let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
-                    if (this.tracknum===3) {
+                    if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
                         stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
-                    }
-                    else {
+                    } else if (this.data.tracks[this.tracknum].name === "Viole") {
+                        stave.addClef("alto").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
+                    } else {
                         stave.addClef("treble").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
                     }
                     let rest = new Vex.Flow.StaveNote({
@@ -212,13 +242,12 @@ class ZoomedRegion {
 
                     if (i < 1) {
                         let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
-                        if (this.tracknum===3) {
+                        if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
                             stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
-                            measureNotesLow.forEach(note => note.clef = "bass");
-                            measureNotesHigh.forEach(note => note.clef = "bass");
                             console.log("JA", measureNotesLow);
-                        }
-                        else {
+                        } else if (this.data.tracks[this.tracknum].name === "Viole") {
+                            stave.addClef("alto").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
+                        } else {
                             stave.addClef("treble").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
                         }
                         Vex.Flow.Formatter.FormatAndDraw(this.context, stave, measureNotesLow);
@@ -228,14 +257,6 @@ class ZoomedRegion {
                         staveX += staveWidth + 50 + staveSpacing;
                     } else {
                         let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth);
-                        if (this.tracknum===3) {
-                            // stave.addClef("bass").setContext(this.context).draw();
-                            measureNotesLow.forEach(note => note.clef = "bass");
-                            measureNotesHigh.forEach(note => note.clef = "bass");
-                            console.log("JA", measureNotesLow);
-                            // stave.setContext(this.context).draw();
-
-                        }
                         stave.setContext(this.context).draw();
                         Vex.Flow.Formatter.FormatAndDraw(this.context, stave, measureNotesLow);
                         if (measureNotesHigh.length > 0) {
