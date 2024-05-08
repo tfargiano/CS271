@@ -10,7 +10,6 @@ class ZoomedRegion {
         this.parentElement.innerHTML = "";
         this.tlist = tracks;
         this.dot = 0;
-        // this.dq = false;
         this.initVis();
     }
 
@@ -73,56 +72,24 @@ class ZoomedRegion {
                 let noteName = `${noteParts[1].toUpperCase()}${noteParts[2] || ""}/${noteParts[3]}`;
                 // console.log(note.ticks);
                 console.log(this.data.tracks[this.tracknum].name)
-                vis.mapDuration(note.durationTicks, note.ticks)
-                if (this.dq === true) {
-                    if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
-                        let n = new Vex.Flow.StaveNote({
-                            keys: [noteName],
-                            duration: vis.mapDuration(note.durationTicks, note.ticks),
-                            clef: "bass",
-                            dots: 1
-                        });
-                        n.addDotToAll();
-                        return [n, note.ticks];
-                    } else if (this.data.tracks[this.tracknum].name === "Viole") {
-                        let n = new Vex.Flow.StaveNote({
-                            keys: [noteName],
-                            duration: vis.mapDuration(note.durationTicks, note.ticks),
-                            clef: "alto",
-                            dots: 1
-                        });
-                        n.addDotToAll();
-                        return [n, note.ticks];
-                    } else {
-                        let n = new Vex.Flow.StaveNote({
-                            keys: [noteName],
-                            duration: vis.mapDuration(note.durationTicks, note.ticks),
-                            dots: 1
-                        });
-                        n.addDotToAll();
-                        return [n, note.ticks];
-                    }
+                if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
+                    return [new Vex.Flow.StaveNote({
+                        keys: [noteName],
+                        duration: vis.mapDuration(note.durationTicks, note.ticks),
+                        clef: "bass"
+                    }), note.ticks];
+                } else if (this.data.tracks[this.tracknum].name === "Viole") {
+                    return [new Vex.Flow.StaveNote({
+                        keys: [noteName],
+                        duration: vis.mapDuration(note.durationTicks, note.ticks),
+                        clef: "alto"
+                    }), note.ticks];
                 } else {
-                    if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
-                        return [new Vex.Flow.StaveNote({
-                            keys: [noteName],
-                            duration: vis.mapDuration(note.durationTicks, note.ticks),
-                            clef: "bass"
-                        }), note.ticks];
-                    } else if (this.data.tracks[this.tracknum].name === "Viole") {
-                        return [new Vex.Flow.StaveNote({
-                            keys: [noteName],
-                            duration: vis.mapDuration(note.durationTicks, note.ticks),
-                            clef: "alto"
-                        }), note.ticks];
-                    } else {
-                        return [new Vex.Flow.StaveNote({
-                            keys: [noteName],
-                            duration: vis.mapDuration(note.durationTicks, note.ticks)
-                        }), note.ticks];
-                    }
+                    return [new Vex.Flow.StaveNote({
+                        keys: [noteName],
+                        duration: vis.mapDuration(note.durationTicks, note.ticks)
+                    }), note.ticks];
                 }
-
             }).filter(n => n != null);
 
         this.displayData = notes;
@@ -136,9 +103,8 @@ class ZoomedRegion {
         const ticksPerSecond = quarterNoteTicks * tempo / 60;
         const durationInSeconds = durationTicks / ticksPerSecond;
         const quarterNotes = durationInSeconds * tempo / 60;
-        this.dq = false;
+
         if (quarterNotes >= 1) return "h";
-        if (quarterNotes >= 0.75) {this.dq = true}
         if (quarterNotes >= 0.5) return "q";
         if (quarterNotes >= 0.25) return "8";
         else return "8";
@@ -174,7 +140,7 @@ class ZoomedRegion {
         // } else {
         //     var staveY = 100 + 100 * this.dot; // Start staves lower to avoid cutting off high notes
         // }
-        var staveY = 40 + 100 * this.dot;
+        var staveY = 25 + 100 * this.dot;
         let i = 0;
 
 
@@ -190,15 +156,20 @@ class ZoomedRegion {
             if (measureNotes.length === 0) {
                 if (i < 1) {
                     let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
-                    stave.setContext(this.context).draw();
-
-                    // Set text directly on the stave
-                    stave.setText(this.data.tracks[this.tracknum].name, Vex.Flow.Modifier.Position.ABOVE, {
-                        shift_x: -10, // Adjust X position as needed
-                        shift_y: 5, // Adjust Y position as needed
-                        justification: Vex.Flow.TextNote.Justification.LEFT
-                    });
-
+                    // var text = new Vex.Flow.TextNote({
+                    //     text: "Render this",
+                    //     font: {
+                    //         family: "Arial",
+                    //         size: 12,
+                    //         weight: ""
+                    //     },
+                    //     duration: 'qr'
+                    // })
+                    //     .setLine(2)
+                    //     .setStave(stave)
+                    //     .setJustification(Vex.Flow.TextNote.Justification.LEFT);
+                    // // .addTickables([text]);
+                    // text.setContext(this.context).draw();
 
                     if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
                         stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
@@ -211,7 +182,7 @@ class ZoomedRegion {
                         keys: ["b/4"], // Position does not matter for rests
                         duration: "hr", // Half note rest
                         align_center: true
-                    });
+                    })
                     //     .addModifier(new Vex.Flow.GraceNoteGroup({
                     //     beams: false,
                     //     slash: false
@@ -309,14 +280,23 @@ class ZoomedRegion {
 
                     if (i < 1) {
                         let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
-                        stave.setContext(this.context).draw();
 
-                        // Set text directly on the stave
-                        stave.setText(this.data.tracks[this.tracknum].name, Vex.Flow.Modifier.Position.ABOVE, {
-                            shift_x: -10, // Adjust X position as needed
-                            shift_y: 5, // Adjust Y position as needed
-                            justification: Vex.Flow.TextNote.Justification.LEFT
-                        });
+                        // var text = new Vex.Flow.TextNote({
+                        //     text: "Render this",
+                        //     font: {
+                        //         family: "Arial",
+                        //         size: 12,
+                        //         weight: ""
+                        //     },
+                        //     duration: 'w'
+                        // })
+                        //     .setLine(2)
+                        //     .setStave(stave)
+                        //     .setJustification(Vex.Flow.TextNote.Justification.LEFT);
+                        // // .addTickables([text]);
+                        // text.setContext(this.context).draw();
+
+                        // stave.setText("Violin", Vex.Flow.Modifier.Position.LEFT).setContext(this.context).draw();
 
                         if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
                             stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
