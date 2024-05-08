@@ -14,11 +14,15 @@ Promise.all(promises)
         console.log(err)
 });
 
+window.ticks = [0,2000];
+
 function createVis(data) {
     songTimeline = new Timeline("songTimeline", data[0]);
     trackList = new trackSelector("trackList", data[0]);
-    focusRegion = new ZoomedRegion("focusRegion", data[0], [0, 2000], []);
+    focusRegion = new ZoomedRegion("focusRegion", data[0], window.ticks, []);
 }
+
+
 
 // React to 'brushed' event and update arrow
 function arrowBrushed(interval0, interval1) {

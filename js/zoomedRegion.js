@@ -9,6 +9,7 @@ class ZoomedRegion {
         // console.log(this.data.tracks);
         this.parentElement.innerHTML = "";
         this.tlist = tracks;
+        this.dot = 0;
         this.initVis();
     }
 
@@ -18,16 +19,31 @@ class ZoomedRegion {
         this.context = this.vfRenderer.getContext();
         this.data.tracks.forEach((track, index) => {
             if (track.name === "pizzicato strings I" || track.name === "pizzicato strings II" || track.name === "pizzicato strings III") {
-                console.log(track.name)
+                // console.log(track.name)
             } else if (this.tlist.includes(track.name)) {
                 console.log(track.name)
             } else {
+                // const trackNamesContainer = document.createElement("div");
+                // trackNamesContainer.style.position = "absolute";
+                // trackNamesContainer.style.top = "0";
+                // trackNamesContainer.style.left = "0";
+                // trackNamesContainer.style.width = "80px"; // Adjust as needed
+                // const trackNameElement = document.createTextNode(track.name);
+                // trackNameElement.textContent = track.name;
+                // trackNameElement.style.marginBottom = "10px";
+                // trackNameElement.style.fontWeight = "bold";
+                // this.parentElement.textContent = track.name;
+                // this.parentElement.appendChild(trackNamesContainer);
+
+
                 this.tracknum = index;
                 // console.log(track.name);
                 this.prepareData();
                 this.render();
+                this.dot = this.dot+1;
             }
         });
+
         // this.stave = new Vex.Flow.Stave(10, 40, 750);
         // this.stave.addClef("treble").addTimeSignature("2/4").setContext(this.context).draw();
 
@@ -110,19 +126,21 @@ class ZoomedRegion {
 
     render() {
 
+
         const measureLengthInTicks = this.data.header.ppq * 2; // Assuming 2/4 time
         let currentTick = Math.floor(this.startTick / measureLengthInTicks) * measureLengthInTicks;
 
-        let staveX = 25; // X position for the first stave, slightly indented
+        let staveX = 100; // X position for the first stave, slightly indented
         const staveWidth = 200; // Define stave width
         const staveSpacing = 0; // Spacing between staves
-        if (this.tracknum === 11) {
-            var staveY = 100 + 100 * 10;
-        } else if (this.tracknum === 13) {
-            var staveY = 100 + 100 * 11;
-        } else {
-            var staveY = 100 + 100 * this.tracknum; // Start staves lower to avoid cutting off high notes
-        }
+        // if (this.tracknum === 11) {
+        //     var staveY = 100 + 100 * 10;
+        // } else if (this.tracknum === 13) {
+        //     var staveY = 100 + 100 * 11;
+        // } else {
+        //     var staveY = 100 + 100 * this.dot; // Start staves lower to avoid cutting off high notes
+        // }
+        var staveY = 25 + 100 * this.dot;
         let i = 0;
 
 
@@ -138,6 +156,21 @@ class ZoomedRegion {
             if (measureNotes.length === 0) {
                 if (i < 1) {
                     let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
+                    // var text = new Vex.Flow.TextNote({
+                    //     text: "Render this",
+                    //     font: {
+                    //         family: "Arial",
+                    //         size: 12,
+                    //         weight: ""
+                    //     },
+                    //     duration: 'qr'
+                    // })
+                    //     .setLine(2)
+                    //     .setStave(stave)
+                    //     .setJustification(Vex.Flow.TextNote.Justification.LEFT);
+                    // // .addTickables([text]);
+                    // text.setContext(this.context).draw();
+
                     if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
                         stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
                     } else if (this.data.tracks[this.tracknum].name === "Viole") {
@@ -247,6 +280,24 @@ class ZoomedRegion {
 
                     if (i < 1) {
                         let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
+
+                        var text = new Vex.Flow.TextNote({
+                            text: "Render this",
+                            font: {
+                                family: "Arial",
+                                size: 12,
+                                weight: ""
+                            },
+                            duration: 'w'
+                        })
+                            .setLine(2)
+                            .setStave(stave)
+                            .setJustification(Vex.Flow.TextNote.Justification.LEFT);
+                        // .addTickables([text]);
+                        text.setContext(this.context).draw();
+
+                        // stave.setText("Violin", Vex.Flow.Modifier.Position.LEFT).setContext(this.context).draw();
+
                         if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
                             stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
                             console.log("JA", measureNotesLow);
@@ -282,6 +333,9 @@ class ZoomedRegion {
             i += 1;
             // console.log(i)
             currentTick += measureLengthInTicks; // Advance to the next measure
+
+
+
         }
     }
 }
