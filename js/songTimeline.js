@@ -110,20 +110,23 @@ class Timeline {
                         return;
                     }
 
-                    let interval1 = vis.updatedData[s0];
-                    let interval2 = vis.updatedData[s1];
+                     // Retrieve all intervals between the indices s0 and s1
+                    let selectedIntervals = vis.updatedData.slice(s0, s1 + 1);
+                    if (!selectedIntervals.length) {
+                        console.error("No data in the selected range:", s0, s1);
+                        return;
+                    }
 
                     // send intervals to arrow to update
-                    arrowBrushed(interval1, interval2);
-                    console.log([interval1, interval2]);
+                    arrowBrushed(selectedIntervals);
 
                     // Check if data at indices is defined
-                    if (!interval1 || !interval2) {
+                    if (!vis.updatedData[s0] || !vis.updatedData[s1]) {
                         console.error("Undefined intervals at indices:", s0, s1);
                         return;
                     }
 
-                    let ticks = [interval1.startTick, interval2.endTick];
+                    let ticks = [vis.updatedData[s0].startTick, vis.updatedData[s1].endTick];
                     console.log(ticks);
 
                     let zoomedRegion;

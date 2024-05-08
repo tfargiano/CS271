@@ -21,11 +21,9 @@ function createVis(data) {
 }
 
 // React to 'brushed' event and update arrow
-function arrowBrushed(interval0, interval1) {
-    let startEndIntervals = [interval0, interval1];
-
+function arrowBrushed(intervals) {
     // exits if page elements and data are not loaded
-    if (!songTimeline || !startEndIntervals) return;
+    if (!songTimeline || !intervals) return;
 
-    songTimeline.arrow.updateVis(startEndIntervals);
+    songTimeline.arrow.updateVis(intervals);
 }
