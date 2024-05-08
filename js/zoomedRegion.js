@@ -130,7 +130,7 @@ class ZoomedRegion {
         const measureLengthInTicks = this.data.header.ppq * 2; // Assuming 2/4 time
         let currentTick = Math.floor(this.startTick / measureLengthInTicks) * measureLengthInTicks;
 
-        let staveX = 100; // X position for the first stave, slightly indented
+        let staveX = 25; // X position for the first stave, slightly indented
         const staveWidth = 200; // Define stave width
         const staveSpacing = 0; // Spacing between staves
         // if (this.tracknum === 11) {
@@ -281,20 +281,20 @@ class ZoomedRegion {
                     if (i < 1) {
                         let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
 
-                        var text = new Vex.Flow.TextNote({
-                            text: "Render this",
-                            font: {
-                                family: "Arial",
-                                size: 12,
-                                weight: ""
-                            },
-                            duration: 'w'
-                        })
-                            .setLine(2)
-                            .setStave(stave)
-                            .setJustification(Vex.Flow.TextNote.Justification.LEFT);
-                        // .addTickables([text]);
-                        text.setContext(this.context).draw();
+                        // var text = new Vex.Flow.TextNote({
+                        //     text: "Render this",
+                        //     font: {
+                        //         family: "Arial",
+                        //         size: 12,
+                        //         weight: ""
+                        //     },
+                        //     duration: 'w'
+                        // })
+                        //     .setLine(2)
+                        //     .setStave(stave)
+                        //     .setJustification(Vex.Flow.TextNote.Justification.LEFT);
+                        // // .addTickables([text]);
+                        // text.setContext(this.context).draw();
 
                         // stave.setText("Violin", Vex.Flow.Modifier.Position.LEFT).setContext(this.context).draw();
 
