@@ -39,3 +39,8 @@ body {
 .trackButton.deselected {
     background-color: #dddddd;
 }
+
+#trackList {
+    width: 90%;        /* Adjust width as necessary */
+    margin: 0 auto;    /* Auto margins for left and right */
+}
