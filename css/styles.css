@@ -24,10 +24,10 @@ body {
 }
 
 .trackButton {
-    padding: 10px 20px;
-    margin: 5px;
+    padding: 8px 15px;
+    margin: 2px;
     border: none;
-    background-color: #4CAF50;
+    background-color: #215dbf;
     color: white;
     text-align: center;
     text-decoration: none;

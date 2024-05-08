@@ -8,6 +8,7 @@ class trackSelector {
     }
 
     renderTrackList() {
+        window.tlist = [];
         const trackListContainer = document.getElementById("trackList");
         // Clear the container before adding track buttons
         trackListContainer.innerHTML = "";
@@ -22,6 +23,8 @@ class trackSelector {
                         // If the button is deselected, remove 'deselected' class to select the track
                         // let focus = new ZoomedRegion("focusRegion", data[0], [0, 2000], []);
                         this.tlist = this.tlist.filter(item => item !== track.name)
+                        window.tlist = this.tlist;
+                        new ZoomedRegion("focusRegion", this.data, window.ticks, window.tlist);
                         trackButton.classList.remove("deselected");
                         console.log(this.tlist);
 
@@ -29,7 +32,11 @@ class trackSelector {
                         // If the button is selected, add 'deselected' class to deselect the track
                         this.tlist.push(track.name)
                         trackButton.classList.add("deselected");
-                        console.log(this.tlist);
+                        window.tlist = this.tlist;
+                        // console.log(this.tlist);
+                        console.log(window.ticks)
+                        new ZoomedRegion("focusRegion", this.data, window.ticks, window.tlist);
+
                     }
                     // this.toggleTrackButton(trackButton);
                 });

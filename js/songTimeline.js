@@ -128,9 +128,10 @@ class Timeline {
 
                     let ticks = [vis.updatedData[s0].startTick, vis.updatedData[s1].endTick];
                     console.log(ticks);
+                    window.ticks = ticks;
 
                     let zoomedRegion;
-                    zoomedRegion = new ZoomedRegion("focusRegion", this.inputData, ticks, badItems)
+                    zoomedRegion = new ZoomedRegion("focusRegion", this.inputData, ticks, window.tlist)
                 }
             })
             .on("end", function(event) {
