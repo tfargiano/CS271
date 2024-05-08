@@ -39,7 +39,7 @@ class stereoPanArrow {
 
     updateVis(intervals) {
         let vis = this;
-        let avgAngle = (intervals[0].stereoPanningAvg + intervals[1].stereoPanningAvg) / 2;
+        let avgAngle = intervals.reduce((acc, interval) => acc + interval.stereoPanningAvg, 0) / intervals.length;
         avgAngle = Math.max(-90, Math.min(90, avgAngle));
         vis.angle = avgAngle;
 
