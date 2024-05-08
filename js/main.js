@@ -16,5 +16,6 @@ Promise.all(promises)
 
 function createVis(data) {
     songTimeline = new Timeline("songTimeline", data[0]);
-    focusRegion = new ZoomedRegion("focusRegion", data[0])
+    trackList = new trackSelector("trackList", data[0]);
+    focusRegion = new ZoomedRegion("focusRegion", data[0], [0, 2000], []);
 }

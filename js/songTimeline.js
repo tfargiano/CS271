@@ -12,7 +12,6 @@ class Timeline {
         this.inputData = data;
         this.updatedData = [];
         this.displayData = [];
-
         this.initVis();
     }
 
@@ -109,9 +108,7 @@ class Timeline {
                         let ticks = [interval1.startTick, interval2.endTick];
 
                         console.log(ticks);
-                        
-                        let zoomedRegion;
-                        zoomedRegion = new ZoomedRegion("zoomedRegion", ticks)
+                        focus = new ZoomedRegion("focusRegion", this.inputData, ticks, badItems)
                     }
                 });
         brushGroup.call(brush);

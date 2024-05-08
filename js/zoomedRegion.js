@@ -1,12 +1,14 @@
 class ZoomedRegion {
-    constructor(parentElementId, data) {
+    constructor(parentElementId, data, ticks, tracks) {
         this.parentElement = document.getElementById(parentElementId);
         this.data = data;
-        this.startTick = 7000;
-        this.endTick = 8500;
+        this.startTick = ticks[0];
+        this.endTick = ticks[1];
         this.displayData = [];
         this.margin = {top: 20, right: 20, bottom: 20, left: 40};
         // console.log(this.data.tracks);
+        this.parentElement.innerHTML = "";
+        this.tlist = tracks;
         this.initVis();
     }
 
@@ -16,6 +18,8 @@ class ZoomedRegion {
         this.context = this.vfRenderer.getContext();
         this.data.tracks.forEach((track, index) => {
             if (track.name === "pizzicato strings I" || track.name === "pizzicato strings II" || track.name === "pizzicato strings III") {
+                console.log(track.name)
+            } else if (this.tlist.includes(track.name)) {
                 console.log(track.name)
             } else {
                 this.tracknum = index;
@@ -105,6 +109,7 @@ class ZoomedRegion {
 
 
     render() {
+
         const measureLengthInTicks = this.data.header.ppq * 2; // Assuming 2/4 time
         let currentTick = Math.floor(this.startTick / measureLengthInTicks) * measureLengthInTicks;
 
