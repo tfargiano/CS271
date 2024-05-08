@@ -25,14 +25,14 @@
       <nav class="navbar">
         <ul>
           <li>
-            <h1 id="site-title"><a href="home">ScorEncoder</a></h1>
+            <h1 id="site-title"><a href="home.html">ScorEncoder</a></h1>
           </li>
         </ul>
         <li>
           <details class="dropdown">
-            <summary>Orchestral Involvement</summary>
+            <summary>Visualization</summary>
             <ul dir="rtl">
-              <li><a href="attack">Attack and Velocity</a></li>
+              <li><a href="home.html">Home</a></li>
             </ul>
           </details>
         </li>
@@ -44,17 +44,18 @@
         <header>
           <h2>Orchestral Involvement</h2>
         </header>
-        The music timeline encodes the number of instruments playing (orchestral
-        involvement) at every particular moment in the piece (1 second tick
-        intervals). The color encodes the intensity of sound based on the attack
-        of the notes.
+        <p>The music timeline displays key information about the piece in one-second intervals. The height of the music timeline at a 
+        given moment encodes the orchestral involvement, or the number of instruments playing, at that time.
+        The intensity of the color encodes the velocity, or the intensity of sound based on the attack of the notes, at that time.
+        This allows one to instantly compare the most intense moments of the piece with the softer and more intimate moments.</p>
+        <p>The arrow in the top-right corner allows one to view from what direction the piece's audio comes from within a given interval, on average. This helps get a quick view into where one may have to conduct at a given time.</p>
       </article>
       <article id="article">
         <div class="row">
           <div
             id="songTimeline"
             class="col-md-12"
-            data-tooltip="Click and drag an interval for notational view."
+            data-tooltip="Click and drag an interval for notational view below. The arrow shows the direction of greatest intensity from the audience's point of view."
           ></div>
         </div>
       </article>
@@ -99,9 +100,11 @@
     <!-- Your implementation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vexflow/3.0.9/vexflow-min.js"></script>
     <script src="js/MIDIParser.js"></script>
-    <script type="module" src="js/songTimeline.js"></script>
+    <script src="js/colorlegend.js"></script>
+    <script src="js/stereoPanArrow.js"></script>
+    <script src="js/songTimeline.js"></script>
     <script src="js/main.js"></script>
-    <script type="module" src="js/zoomedRegion.js"></script>
-    <script type="module" src="js/trackSelect.js"></script>
+    <script src="js/zoomedRegion.js"></script>
+    <script src="js/trackSelect.js"></script>
   </body>
 </html>
