@@ -156,20 +156,15 @@ class ZoomedRegion {
             if (measureNotes.length === 0) {
                 if (i < 1) {
                     let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
-                    // var text = new Vex.Flow.TextNote({
-                    //     text: "Render this",
-                    //     font: {
-                    //         family: "Arial",
-                    //         size: 12,
-                    //         weight: ""
-                    //     },
-                    //     duration: 'qr'
-                    // })
-                    //     .setLine(2)
-                    //     .setStave(stave)
-                    //     .setJustification(Vex.Flow.TextNote.Justification.LEFT);
-                    // // .addTickables([text]);
-                    // text.setContext(this.context).draw();
+                    stave.setContext(this.context).draw();
+
+                    // Set text directly on the stave
+                    stave.setText(this.data.tracks[this.tracknum].name, Vex.Flow.Modifier.Position.ABOVE, {
+                        shift_x: -10, // Adjust X position as needed
+                        shift_y: 5, // Adjust Y position as needed
+                        justification: Vex.Flow.TextNote.Justification.LEFT
+                    });
+
 
                     if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
                         stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
@@ -182,7 +177,7 @@ class ZoomedRegion {
                         keys: ["b/4"], // Position does not matter for rests
                         duration: "hr", // Half note rest
                         align_center: true
-                    })
+                    });
                     //     .addModifier(new Vex.Flow.GraceNoteGroup({
                     //     beams: false,
                     //     slash: false
@@ -280,24 +275,15 @@ class ZoomedRegion {
 
                     if (i < 1) {
                         let stave = new Vex.Flow.Stave(staveX, staveY, staveWidth + 50);
+                        stave.setContext(this.context).draw();
 
-                        // var text = new Vex.Flow.TextNote({
-                        //     text: "Render this",
-                        //     font: {
-                        //         family: "Arial",
-                        //         size: 12,
-                        //         weight: ""
-                        //     },
-                        //     duration: 'w'
-                        // })
-                        //     .setLine(2)
-                        //     .setStave(stave)
-                        //     .setJustification(Vex.Flow.TextNote.Justification.LEFT);
-                        // // .addTickables([text]);
-                        // text.setContext(this.context).draw();
-
-                        // stave.setText("Violin", Vex.Flow.Modifier.Position.LEFT).setContext(this.context).draw();
-
+                        // Set text directly on the stave
+                        stave.setText(this.data.tracks[this.tracknum].name, Vex.Flow.Modifier.Position.ABOVE, {
+                            shift_x: -10, // Adjust X position as needed
+                            shift_y: 5, // Adjust Y position as needed
+                            justification: Vex.Flow.TextNote.Justification.LEFT
+                        });
+                        
                         if (this.data.tracks[this.tracknum].name === "Contrabassi" || this.data.tracks[this.tracknum].name === "Fagotti" || this.data.tracks[this.tracknum].name === "Timpani (Sol, Do)" || this.data.tracks[this.tracknum].name === "Violoncelli") {
                             stave.addClef("bass").addTimeSignature("2/4").addKeySignature("Eb").setContext(this.context).draw();
                             console.log("JA", measureNotesLow);
